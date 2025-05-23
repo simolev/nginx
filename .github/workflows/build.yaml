@@ -26,6 +26,6 @@ jobs:
     - name: Check out
       uses: actions/checkout@main
     - name: Explore dir
-      run: pwd; ls
+      run: pwd; ls; uname -a; lsb_release -a
     - name: login to ECR
       run: aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_ECR_REPO
