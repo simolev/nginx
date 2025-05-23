@@ -17,7 +17,7 @@ jobs:
     container: docker:latest
     strategy:
       matrix:
-        environment: [dev, staging, prod]
+        environment: [dev, staging]
 
     environment: ${{ matrix.environment }}
     env:
