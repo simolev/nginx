@@ -21,7 +21,6 @@ jobs:
 
     environment: ${{ matrix.environment }}
     env:
-      VERSION:                 ${{ github.sha }}
       AWS_ECR_REPO:            ${{ vars.AWS_ECR_REPO }}
       AWS_ACCESS_KEY_ID:       ${{ vars.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY:   ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -46,7 +45,9 @@ jobs:
     - name: login to ECR
       run: aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_ECR_REPO
     - name: docker build
-      run: docker build -f docker/Dockerfile -t ${TAG} .
+      run: |
+        which docker
+        docker build -t ${TAG} .
     - name: docker tag
       run: |
         docker tag ${TAG} ${IMAGE}
