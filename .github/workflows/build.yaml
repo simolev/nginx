@@ -58,8 +58,8 @@ jobs:
     - name: deploy
       run: |
         revision=$(aws ecs describe-task-definition --task-definition $AWS_ECS_TASK_DEFINITION
-        | jq '.taskDefinition.containerDefinitions[0].image = env.IMAGE | .taskDefinition | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)'
-        | xargs -0I{} aws ecs register-task-definition --cli-input-json {} | tee /dev/stderr | jq '.taskDefinition.revision')
+          | jq '.taskDefinition.containerDefinitions[0].image = env.IMAGE | .taskDefinition | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)'
+          | xargs -0I{} aws ecs register-task-definition --cli-input-json {} | tee /dev/stderr | jq '.taskDefinition.revision')
         echo "Pushing revision $AWS_ECS_TASK_DEFINITION:$revision"
         aws ecs update-service --cluster $CLUSTER --service $AWS_ECS_SERVICE --task-definition $AWS_ECS_TASK_DEFINITION:${revision}
         aws ecs wait services-stable --cluster $CLUSTER --service $AWS_ECS_SERVICE
