@@ -38,7 +38,7 @@ jobs:
     - name: Check out
       uses: actions/checkout@main
     - name: Explore dir
-      run: pwd; ls; uname -a; lsb_release -a
+      run: pwd; ls; uname -a
     - name: install utils
       run: apk add aws-cli jq
     - name: login to ECR
