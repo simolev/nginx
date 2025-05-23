@@ -55,13 +55,11 @@ jobs:
         docker push ${IMAGE}
         docker push ${LATEST}
         echo "Pushed images ${IMAGE} and ${LATEST}"
-    - name: find current task definition revision number
-      run: >
-        export revision=$(aws ecs describe-task-definition --task-definition $AWS_ECS_TASK_DEFINITION
-        | jq '.taskDefinition.containerDefinitions[0].image = env.IMAGE | .taskDefinition | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)'
-        | xargs -0I{} aws ecs register-task-definition --cli-input-json {} | tee /dev/stderr | jq '.taskDefinition.revision')
-    - name: deploying new revision
+    - name: deploy
       run: |
+        export revision=$(aws ecs describe-task-definition --task-definition $AWS_ECS_TASK_DEFINITION \
+        | jq '.taskDefinition.containerDefinitions[0].image = env.IMAGE | .taskDefinition | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' \
+        | xargs -0I{} aws ecs register-task-definition --cli-input-json {} | tee /dev/stderr | jq '.taskDefinition.revision')
         echo "Pushing revision $AWS_ECS_TASK_DEFINITION:$revision"
         aws ecs update-service --cluster $CLUSTER --service $AWS_ECS_SERVICE --task-definition $AWS_ECS_TASK_DEFINITION:${revision}
     - name: waiting for update to be completed
