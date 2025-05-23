@@ -1,10 +1,10 @@
 name: Android CI
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+# on:
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
 
 env:
   SVC: ${{ vars.SVC }}
@@ -32,22 +32,20 @@ jobs:
       IMAGE:                   ${{ vars.AWS_ECR_REPO }}/${{ vars.PROJ }}/${{ matrix.environment }}/${{ vars.SVC }}:${{ github.sha }}
 
     steps:
-    - name: Check out
-      uses: actions/checkout@main
     - name: short git commit SHA
       run: echo "SHA=`echo ${{ github.sha }} | cut -c1-8`" >> $GITHUB_ENV
     - name: print env
       run: env
     - name: Explore dir
       run: pwd; ls; uname -a
+    - name: Check out
+      uses: actions/checkout@main
     - name: install utils
       run: apk add aws-cli jq
     - name: login to ECR
       run: aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_ECR_REPO
     - name: docker build
-      run: |
-        which docker
-        docker build -t ${TAG} .
+      run: docker build -t ${TAG} .
     - name: docker tag
       run: |
         docker tag ${TAG} ${IMAGE}
