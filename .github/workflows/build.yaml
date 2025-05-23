@@ -12,13 +12,24 @@ env:
   AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
 
 jobs:
-  build_dev:
+  build:
     runs-on: ubuntu-latest
-    environment: dev
+    strategy:
+      matrix:
+        environment: [dev, staging, prod]
+
+    environment: ${{ matrix.environment }}
     env:
-      AWS_ECR_REPO: ${{ vars.AWS_ECR_REPO }}
-      AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      VERSION:                 ${{ github.sha }}
+      AWS_ECR_REPO:            ${{ vars.AWS_ECR_REPO }}
+      AWS_ACCESS_KEY_ID:       ${{ vars.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY:   ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      TAG:                     ${{ vars.SVC }}/${{ github.sha }}
+      CLUSTER:                 ${{ vars.PROJ }}-${{ matrix.environment }}-cluster
+      AWS_ECS_TASK_DEFINITION: ${{ vars.PROJ }}-${{ matrix.environment }}-${{ vars.SVC }}-task
+      AWS_ECS_SERVICE:         ${{ vars.PROJ }}-${{ matrix.environment }}-${{ vars.SVC }}-service
+      LATEST:                  ${{ vars.AWS_ECR_REPO }}/${{ vars.PROJ }}/${{ matrix.environment }}/${{ vars.SVC }}:latest
+      IMAGE:                   ${{ vars.AWS_ECR_REPO }}/${{ vars.PROJ }}/${{ matrix.environment }}/${{ vars.SVC }}:${{ github.sha }}
 
     steps:
     - name: print env
@@ -29,3 +40,14 @@ jobs:
       run: pwd; ls; uname -a; lsb_release -a
     - name: login to ECR
       run: aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_ECR_REPO
+    - name: docker build
+      run: docker build -f docker/Dockerfile -t ${TAG} .
+    - name: docker tag
+      run: |
+        docker tag ${TAG} ${IMAGE}
+        docker tag ${TAG} ${LATEST}
+    - name: docker push
+      run: |
+        docker push ${IMAGE}
+        docker push ${LATEST}
+        echo "Pushed images ${IMAGE} and ${LATEST}"
