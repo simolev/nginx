@@ -36,9 +36,7 @@ jobs:
     - name: Check out
       uses: actions/checkout@main
     - name: short git commit SHA
-      run: |
-        calculatedSha=$(git rev-parse --short ${{ github.sha }})
-        echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
+      run: echo "SHA=`echo ${{ github.sha }} | cut -c1-8`" >> $GITHUB_ENV
     - name: print env
       run: env
     - name: Explore dir
