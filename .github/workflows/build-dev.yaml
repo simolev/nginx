@@ -1,0 +1,24 @@
+# name: build-dev
+
+# on:
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
+
+# jobs:
+#   call_staging_deploy:
+#     uses: ./.github/workflows/build-template.yml
+#     with:
+#       environment: dev
+#     secrets:
+#       # Inherit all repository/organization secrets OR explicitly pass specific secrets
+#       # For environment-specific secrets, you'd define them in the environment
+#       # and they'd be implicitly available when `environment:` is set on the job.
+#       # However, if you *must* pass a secret from the caller, you'd do:
+#       # deploy_token: ${{ secrets.STAGING_DEPLOY_TOKEN }} # (assuming a repo secret name)
+#       # OR, if you use a consistent secret name in the environment,
+#       # and the reusable workflow's job uses `environment: ${{ inputs.environment }}`,
+#       # the secret will be picked up automatically from that environment's secrets.
+#       # The `secrets: inherit` is often the simplest for consistent naming.
+#       inherit: secrets # This passes all secrets from the caller to the reusable workflow
