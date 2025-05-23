@@ -1,0 +1,26 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build_dev:
+    runs-on: docker:dind
+    environment: dev
+    container:
+      image: docker:latest
+
+    steps:
+    - name: print env
+      run: env
+    - name: Check out
+      uses: actions/checkout@main
+    - name: Explore dir
+      run: pwd; ls
+    - name: install utilities
+      run: apk add aws-cli
+    - name: login to ECR
+      run: aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_ECR_REPO
