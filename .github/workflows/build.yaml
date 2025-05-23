@@ -33,14 +33,14 @@ jobs:
       IMAGE:                   ${{ vars.AWS_ECR_REPO }}/${{ vars.PROJ }}/${{ matrix.environment }}/${{ vars.SVC }}:${{ github.sha }}
 
     steps:
+    - name: Check out
+      uses: actions/checkout@main
     - name: short git commit SHA
       run: |
         calculatedSha=$(git rev-parse --short ${{ github.sha }})
         echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
     - name: print env
       run: env
-    - name: Check out
-      uses: actions/checkout@main
     - name: Explore dir
       run: pwd; ls; uname -a
     - name: install utils
