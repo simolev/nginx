@@ -57,7 +57,7 @@ jobs:
         echo "Pushed images ${IMAGE} and ${LATEST}"
     - name: find current task definition revision number
       run: >
-        revision=$(aws ecs describe-task-definition --task-definition $AWS_ECS_TASK_DEFINITION
+        export revision=$(aws ecs describe-task-definition --task-definition $AWS_ECS_TASK_DEFINITION
         | jq '.taskDefinition.containerDefinitions[0].image = env.IMAGE | .taskDefinition | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)'
         | xargs -0I{} aws ecs register-task-definition --cli-input-json {} | tee /dev/stderr | jq '.taskDefinition.revision')
     - name: deploying new revision
