@@ -13,18 +13,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container: docker:latest
+    strategy:
+      matrix:
+        environment: [staging]
 
-    environment: staging
+    environment: ${{ matrix.environment }}
     env:
       AWS_ECR_REPO:            ${{ vars.AWS_ECR_REPO }}
       AWS_ACCESS_KEY_ID:       ${{ vars.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY:   ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       TAG:                     ${{ vars.SVC }}/${{ github.sha }}
-      CLUSTER:                 ${{ vars.PROJ }}-${{ github.environment }}-cluster
-      AWS_ECS_TASK_DEFINITION: ${{ vars.PROJ }}-${{ github.environment }}-${{ vars.SVC }}-task
-      AWS_ECS_SERVICE:         ${{ vars.PROJ }}-${{ github.environment }}-${{ vars.SVC }}-service
-      LATEST:                  ${{ vars.AWS_ECR_REPO }}/${{ vars.PROJ }}/${{ github.environment }}/${{ vars.SVC }}:latest
-      IMAGE:                   ${{ vars.AWS_ECR_REPO }}/${{ vars.PROJ }}/${{ github.environment }}/${{ vars.SVC }}:${{ github.sha }}
+      CLUSTER:                 ${{ vars.PROJ }}-${{ matrix.environment }}-cluster
+      AWS_ECS_TASK_DEFINITION: ${{ vars.PROJ }}-${{ matrix.environment }}-${{ vars.SVC }}-task
+      AWS_ECS_SERVICE:         ${{ vars.PROJ }}-${{ matrix.environment }}-${{ vars.SVC }}-service
+      LATEST:                  ${{ vars.AWS_ECR_REPO }}/${{ vars.PROJ }}/${{ matrix.environment }}/${{ vars.SVC }}:latest
+      IMAGE:                   ${{ vars.AWS_ECR_REPO }}/${{ vars.PROJ }}/${{ matrix.environment }}/${{ vars.SVC }}:${{ github.sha }}
 
     steps:
     - name: Check out
@@ -35,7 +38,7 @@ jobs:
         sha=$(git rev-parse --short ${{ github.sha }})
         echo "SHA=$sha" >> $GITHUB_ENV
         echo "TAG=${{ vars.SVC }}/$sha" >> $GITHUB_ENV
-        echo "IMAGE=${{ vars.AWS_ECR_REPO }}/${{ vars.PROJ }}/${{ github.environment }}/${{ vars.SVC }}:$sha" >> $GITHUB_ENV
+        echo "IMAGE=${{ vars.AWS_ECR_REPO }}/${{ vars.PROJ }}/${{ matrix.environment }}/${{ vars.SVC }}:$sha" >> $GITHUB_ENV
     - name: print env
       run: env
     - name: Explore dir
