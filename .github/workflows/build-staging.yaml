@@ -1,0 +1,10 @@
+name: Build and Deploy - STAGING
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    uses: ./.github/workflows/template-build.yaml
+    with:
+      environment: staging
+    secrets: inherit
