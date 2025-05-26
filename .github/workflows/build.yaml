@@ -15,11 +15,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container: docker:latest
-    strategy:
-      matrix:
-        environment: [dev, staging]
 
-    environment: ${{ matrix.environment }}
+    environment: staging
     env:
       AWS_ECR_REPO:            ${{ vars.AWS_ECR_REPO }}
       AWS_ACCESS_KEY_ID:       ${{ vars.AWS_ACCESS_KEY_ID }}
@@ -33,7 +30,11 @@ jobs:
 
     steps:
     - name: short git commit SHA
-      run: echo "SHA=`echo ${{ github.sha }} | cut -c1-8`" >> $GITHUB_ENV
+      run: |
+        sha=$(git rev-parse --short ${{ github.sha }})
+        echo "SHA=$sha" >> $GITHUB_ENV
+        echo "TAG=${{ vars.SVC }}/$sha" >> $GITHUB_ENV
+        echo "IMAGE=${{ vars.AWS_ECR_REPO }}/${{ vars.PROJ }}/${{ matrix.environment }}/${{ vars.SVC }}:$sha" >> $GITHUB_ENV
     - name: print env
       run: env
     - name: Explore dir
