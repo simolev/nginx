@@ -3,8 +3,6 @@ name: Build and Deploy
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 env:
   SVC: ${{ vars.SVC }}
@@ -33,6 +31,7 @@ jobs:
       uses: actions/checkout@main
     - name: short git commit SHA
       run: |
+        git config --global --add safe.directory $GITHUB_WORKSPACE
         sha=$(git rev-parse --short ${{ github.sha }})
         echo "SHA=$sha" >> $GITHUB_ENV
         echo "TAG=${{ vars.SVC }}/$sha" >> $GITHUB_ENV
