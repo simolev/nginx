@@ -34,9 +34,9 @@ jobs:
       uses: actions/checkout@main
     - name: short git commit SHA
       run: |
-        git config --global --add safe.directory $GITHUB_WORKSPACE
+        git config --add safe.directory $GITHUB_WORKSPACE
         sha=$(git rev-parse --short ${{ github.sha }})
-        echo "SHA=$sha" >> $GITHUB_ENV
+        echo "COMMIT_SHORT_SHA=$sha" >> $GITHUB_ENV
         echo "TAG=${{ vars.SVC }}/$sha" >> $GITHUB_ENV
         echo "IMAGE=${{ vars.AWS_ECR_REPO }}/${{ vars.PROJ }}/${{ matrix.environment }}/${{ vars.SVC }}:$sha" >> $GITHUB_ENV
     - name: print env
