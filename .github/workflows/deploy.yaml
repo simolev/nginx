@@ -1,0 +1,62 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy-dev:
+    uses: ./.github/workflows/template-build.yaml
+    with:
+      environment: dev
+    secrets: inherit
+
+  approve-staging:
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+    steps:
+    - name: Calculate short sha for the commit
+      id: short-sha
+      uses: benjlevesque/short-sha@v3.0
+    - name: manual approval
+      uses: trstringer/manual-approval@v1
+      timeout-minutes: 10
+      with:
+        secret: ${{ github.TOKEN }}
+        approvers: simolev
+        minimum-approvals: 1
+        issue-title: "Deploying commit ${{ steps.short-sha.outputs.sha }} to STAGING (from DEV)"
+        issue-body: "Please approve or deny the deployment of version ${{ steps.short-sha.outputs.sha }}."
+        exclude-workflow-initiator-as-approver: false   
+
+  deploy-staging:
+    needs: approve-staging
+    uses: ./.github/workflows/template-build.yaml
+    with:
+      environment: staging
+    secrets: inherit
+
+  approve-prod:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    steps:
+    - name: Calculate short sha for the commit
+      id: short-sha
+      uses: benjlevesque/short-sha@v3.0
+    - name: manual approval
+      uses: trstringer/manual-approval@v1
+      timeout-minutes: 10
+      with:
+        secret: ${{ github.TOKEN }}
+        approvers: simolev
+        minimum-approvals: 1
+        issue-title: "Deploying commit ${{ steps.short-sha.outputs.sha }} to PROD (after STAGING)"
+        issue-body: "Please approve or deny the deployment of version ${{ steps.short-sha.outputs.sha }}."
+        exclude-workflow-initiator-as-approver: false   
+
+  deploy-prod:
+    needs: approve-prod
+    uses: ./.github/workflows/template-build.yaml
+    with:
+      environment: prod
+    secrets: inherit
