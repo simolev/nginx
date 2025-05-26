@@ -9,7 +9,6 @@ jobs:
     uses: ./.github/workflows/template-build.yaml
     with:
       environment: dev
-    secrets: inherit
 
   build-staging:
     needs: build-dev
