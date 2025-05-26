@@ -29,6 +29,8 @@ jobs:
       IMAGE:                   ${{ vars.AWS_ECR_REPO }}/${{ vars.PROJ }}/${{ matrix.environment }}/${{ vars.SVC }}:${{ github.sha }}
 
     steps:
+    - name: Check out
+      uses: actions/checkout@main
     - name: short git commit SHA
       run: |
         sha=$(git rev-parse --short ${{ github.sha }})
@@ -39,8 +41,6 @@ jobs:
       run: env
     - name: Explore dir
       run: pwd; ls; uname -a
-    - name: Check out
-      uses: actions/checkout@main
     - name: install utils
       run: apk add aws-cli jq
     - name: login to ECR
