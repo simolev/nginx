@@ -1,18 +1,12 @@
-name: Multi-environment Build
+name: Build and Deploy - DEV
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  build-dev:
+  build:
     uses: ./.github/workflows/template-build.yaml
     with:
       environment: dev
-
-  build-staging:
-    needs: build-dev
-    uses: ./.github/workflows/template-build.yaml
-    with:
-      environment: staging
     secrets: inherit
