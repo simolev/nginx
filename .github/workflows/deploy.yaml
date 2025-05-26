@@ -22,7 +22,7 @@ jobs:
       uses: trstringer/manual-approval@v1
       timeout-minutes: 10
       with:
-        secret: ${{ github.TOKEN }}
+        secret: ${{ github.token }}
         approvers: simolev
         minimum-approvals: 1
         issue-title: "Deploying commit ${{ steps.short-sha.outputs.sha }} to STAGING (from DEV)"
@@ -47,7 +47,7 @@ jobs:
       uses: trstringer/manual-approval@v1
       timeout-minutes: 10
       with:
-        secret: ${{ github.TOKEN }}
+        secret: ${{ github.token }}
         approvers: simolev
         minimum-approvals: 1
         issue-title: "Deploying commit ${{ steps.short-sha.outputs.sha }} to PROD (after STAGING)"
