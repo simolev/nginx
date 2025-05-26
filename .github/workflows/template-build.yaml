@@ -1,4 +1,4 @@
-name: Build template
+name: Build and deploy template
 
 on:
   workflow_call:
