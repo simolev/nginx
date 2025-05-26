@@ -14,6 +14,7 @@ jobs:
   approve-staging:
     needs: deploy-dev
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
     - name: Calculate short sha for the commit
       id: short-sha
