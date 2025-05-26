@@ -27,7 +27,7 @@ jobs:
         secret: ${{ secrets.GITHUB_TOKEN }}
         approvers: simolev
         minimum-approvals: 1
-        issue-title: "Deploying commit ${{ steps.short-sha.outputs.sha }} to STAGING (from DEV)"
+        issue-title: "Deploying to STAGING commit ${{ steps.short-sha.outputs.sha }} (DEV -> STAGING)"
         issue-body: "Please approve or deny the deployment of version ${{ steps.short-sha.outputs.sha }}."
         exclude-workflow-initiator-as-approver: false   
 
@@ -54,7 +54,7 @@ jobs:
         secret: ${{ secrets.GITHUB_TOKEN }}
         approvers: simolev
         minimum-approvals: 1
-        issue-title: "Deploying commit ${{ steps.short-sha.outputs.sha }} to PROD (after STAGING)"
+        issue-title: "Deploying to PROD commit ${{ steps.short-sha.outputs.sha }} (DEV -> STAGING -> PROD)"
         issue-body: "Please approve or deny the deployment of version ${{ steps.short-sha.outputs.sha }}."
         exclude-workflow-initiator-as-approver: false   
 
