@@ -18,7 +18,7 @@ jobs:
       issues: write
     steps:
     - name: short git commit SHA
-      run: echo "SHA=${${{ github.sha }}:0:8}" >> $GITHUB_ENV
+      run: echo "SHA=$(printf "%.8s" ${{ github.sha }})" >> $GITHUB_ENV
     - name: manual approval
       uses: trstringer/manual-approval@v1
       timeout-minutes: 10
