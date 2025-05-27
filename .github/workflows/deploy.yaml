@@ -18,7 +18,7 @@ jobs:
       issues: write
     steps:
     - name: short git commit SHA
-      run: pwd; ls; echo "SHA=$(echo ${{ github.sha }} | cut -c1-8)" >> $GITHUB_ENV
+      run: echo "SHA=${${{ github.sha }}:0:8}" >> $GITHUB_ENV
     - name: manual approval
       uses: trstringer/manual-approval@v1
       timeout-minutes: 10
@@ -45,7 +45,6 @@ jobs:
       issues: write
     steps:
     - name: Calculate short sha for the commit
-      id: short-sha
       uses: benjlevesque/short-sha@v3.0
     - name: manual approval
       uses: trstringer/manual-approval@v1
