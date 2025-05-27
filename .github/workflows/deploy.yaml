@@ -27,7 +27,10 @@ jobs:
         approvers: simolev
         minimum-approvals: 1
         issue-title: "Deploying to STAGING commit ${{ env.SHA }} (DEV -> STAGING)"
-        issue-body: "Please approve or deny deploying version ${{ env.SHA }} to STAGING."
+        issue-body: |
+          Approve or deny deploying version ${{ env.SHA }} to PROD.
+          Approve by commenting one of: *approved*, *approve*, *lgtm*, *yes*, *ok*.
+          Deny by commenting one of: *denied*, *deny*, *no*.
         exclude-workflow-initiator-as-approver: false
         additional-approved-words: 'ok'
 
@@ -54,7 +57,10 @@ jobs:
         approvers: simolev
         minimum-approvals: 1
         issue-title: "Deploying to PROD commit ${{ env.SHA }} (DEV -> STAGING -> PROD)"
-        issue-body: "Please approve or deny deploying version ${{ env.SHA }} to PROD."
+        issue-body: |
+          Approve or deny deploying version ${{ env.SHA }} to PROD.
+          Approve by commenting one of: *approved*, *approve*, *lgtm*, *yes*, *ok*.
+          Deny by commenting one of: *denied*, *deny*, *no*.
         exclude-workflow-initiator-as-approver: false
         additional-approved-words: 'ok'
 
