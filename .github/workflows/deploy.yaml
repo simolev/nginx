@@ -18,7 +18,7 @@ jobs:
       issues: write
     steps:
     - name: short git commit SHA
-      run: echo "SHA=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
+      run: echo "SHA=$(git rev-parse --parseopt --short ${{ github.sha }})" >> $GITHUB_ENV
     - name: manual approval
       uses: trstringer/manual-approval@v1
       timeout-minutes: 10
