@@ -18,7 +18,7 @@ jobs:
       issues: write
     steps:
     - name: short git commit SHA
-      run: echo "SHA=$(printf "%.12s" ${{ github.sha }})" >> $GITHUB_ENV
+      run: echo "SHA=$(printf "%.7s" ${{ github.sha }})" >> $GITHUB_ENV
     - name: manual approval
       uses: trstringer/manual-approval@v1
       timeout-minutes: 10
@@ -29,7 +29,8 @@ jobs:
         issue-title: "Deploying to STAGING commit ${{ env.SHA }} (DEV -> STAGING)"
         issue-body: |
           Approve or deny deploying version ${{ env.SHA }} to PROD.
-          Approve by commenting one of: *approved*, *approve*, *lgtm*, *yes*, *ok*.
+
+          Approve by commenting one of: **approved**, **approve**, **lgtm**, **yes**, **ok**.
           Deny by commenting one of: *denied*, *deny*, *no*.
         exclude-workflow-initiator-as-approver: false
         additional-approved-words: 'ok'
@@ -48,7 +49,7 @@ jobs:
       issues: write
     steps:
     - name: short git commit SHA
-      run: echo "SHA=$(printf "%.12s" ${{ github.sha }})" >> $GITHUB_ENV
+      run: echo "SHA=$(printf "%.7s" ${{ github.sha }})" >> $GITHUB_ENV
     - name: manual approval
       uses: trstringer/manual-approval@v1
       timeout-minutes: 10
@@ -59,7 +60,8 @@ jobs:
         issue-title: "Deploying to PROD commit ${{ env.SHA }} (DEV -> STAGING -> PROD)"
         issue-body: |
           Approve or deny deploying version ${{ env.SHA }} to PROD.
-          Approve by commenting one of: *approved*, *approve*, *lgtm*, *yes*, *ok*.
+
+          Approve by commenting one of: **approved**, **approve**, **lgtm**, **yes**, **ok**.
           Deny by commenting one of: *denied*, *deny*, *no*.
         exclude-workflow-initiator-as-approver: false
         additional-approved-words: 'ok'
