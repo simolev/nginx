@@ -44,8 +44,8 @@ jobs:
     permissions:
       issues: write
     steps:
-    - name: Calculate short sha for the commit
-      uses: benjlevesque/short-sha@v3.0
+    - name: short git commit SHA
+      run: echo "SHA=$(printf "%.8s" ${{ github.sha }})" >> $GITHUB_ENV
     - name: manual approval
       uses: trstringer/manual-approval@v1
       timeout-minutes: 10
