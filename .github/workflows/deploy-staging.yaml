@@ -1,0 +1,44 @@
+name: Build and Deploy - Staging
+
+on:
+  push:
+    branches: [ "hotfix/**" ]
+  workflow_dispatch:
+
+jobs:
+  deploy-staging:
+    uses: ./.github/workflows/deploy-template.yaml
+    with:
+      environment: staging
+    secrets: inherit
+
+  approve-prod:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+    - name: short git commit SHA
+      run: echo "SHA=$(printf "%.7s" ${{ github.sha }})" >> $GITHUB_ENV
+    - name: manual approval
+      uses: trstringer/manual-approval@v1
+      timeout-minutes: 10
+      with:
+        secret: ${{ secrets.GITHUB_TOKEN }}
+        approvers: eglimiraka2,frsantonastaso,kalymero,pasquale-merolle,simolev
+        minimum-approvals: 1
+        issue-title: "Deploying to PROD commit ${{ env.SHA }} (DEV -> STAGING -> PROD)"
+        issue-body: |
+          Approve or deny deploying version ${{ env.SHA }} to PROD.
+
+          Approve by commenting one of: **approved**, **approve**, **lgtm**, **yes**, **ok**.
+          Deny by commenting one of: *denied*, *deny*, *no*.
+        exclude-workflow-initiator-as-approver: false
+        additional-approved-words: 'ok'
+
+  deploy-prod:
+    needs: approve-prod
+    uses: ./.github/workflows/deploy-template.yaml
+    with:
+      environment: prod
+    secrets: inherit
